@@ -1,5 +1,6 @@
 
 const pokeApi = {}
+const baseurl='https://pokeapi.co/api/v2/'
 
 function convertPokeApiDetailToPokemon(pokeDetail) {
     const pokemon = new Pokemon()
@@ -8,7 +9,6 @@ function convertPokeApiDetailToPokemon(pokeDetail) {
 
     const types = pokeDetail.types.map((typeSlot) => typeSlot.type.name)
     const [type] = types
-
     pokemon.types = types
     pokemon.type = type
 
@@ -32,4 +32,19 @@ pokeApi.getPokemons = (offset = 0, limit = 5) => {
         .then((pokemons) => pokemons.map(pokeApi.getPokemonDetail))
         .then((detailRequests) => Promise.all(detailRequests))
         .then((pokemonsDetails) => pokemonsDetails)
+}
+
+function convertPokeApiStatsToPokemonDetail(pokeStatsDetail) {
+    const pokemonStats = new PokemonDetails();
+    pokemonStats.experiencia=pokeStatsDetail.base_experience;
+    pokemonStats.imagem=pokeStatsDetail.sprites.front_default; 
+    pokemonStats.stats=pokeStatsDetail.stats;
+    return pokemonStats;
+}
+
+
+pokeApi.getPokemonStats = (idPokemon) => {
+    return fetch(`${baseurl}pokemon/${idPokemon}`)
+        .then((response) => response.json())
+        
 }
